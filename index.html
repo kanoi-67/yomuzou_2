@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>よむ ぞう くん②</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Kiwi+Maru:wght@400;500;700&display=swap');
+
+        :root {
+            --primary-green: #f0fdf4;
+            --accent-orange: #fb923c;
+            --accent-blue: #3b82f6;
+            --accent-red: #ef4444;
+        }
+
+        body {
+            font-family: 'Kiwi Maru', serif;
+            background-color: var(--primary-green);
+            overflow: hidden;
+            touch-action: manipulation;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+
+        .card-container {
+            perspective: 1000px;
+            width: 32%;
+            max-width: 240px;
+        }
+
+        .card-inner {
+            position: relative;
+            width: 100%;
+            aspect-ratio: 3/4;
+            transition: transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+            transform-style: preserve-3d;
+            cursor: pointer;
+        }
+
+        .card-inner.is-flipped {
+            transform: rotateY(180deg);
+        }
+
+        .card-face {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            border-radius: 1.5rem;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            border: 5px solid white;
+            padding: 10px;
+        }
+
+        .card-front { background-color: #ffffff; z-index: 2; }
+        .card-back { background-color: #ffffff; transform: rotateY(180deg); }
+
+        .pattern-1 { background-image: radial-gradient(#fbbf24 20%, transparent 20%); background-size: 15px 15px; background-color: #fffbeb; }
+        .pattern-2 { background-image: repeating-linear-gradient(45deg, #60a5fa 0, #60a5fa 5px, #dbeafe 5px, #dbeafe 10px); background-color: #eff6ff; }
+        .pattern-3 { background-image: radial-gradient(#f87171 10%, transparent 10%); background-size: 20px 20px; background-color: #fef2f2; }
+
+        .dot {
+            background-color: #3b82f6;
+            border-radius: 50%;
+            border: 2px solid #1d4ed8;
+            flex-shrink: 0;
+            box-shadow: inset 0 -2px 4px rgba(0,0,0,0.2);
+        }
+
+        #display-dots {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-content: center;
+            gap: 8px;
+            width: 100%;
+            height: 100%;
+        }
+
+        .celebration-element {
+            position: absolute;
+            pointer-events: none;
+            animation: fall 4s linear forwards;
+            z-index: 100;
+        }
+
+        @keyframes fall {
+            0% { transform: translateY(-10vh) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(110vh) rotate(720deg); opacity: 0; }
+        }
+
+        .firework {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            animation: explode 0.8s ease-out forwards;
+            z-index: 101;
+        }
+
+        @keyframes explode {
+            0% { transform: scale(1); opacity: 1; }
+            100% { transform: scale(30); opacity: 0; }
+        }
+
+        .btn-bounce {
+            transition: transform 0.1s, box-shadow 0.1s;
+        }
+        .btn-bounce:active {
+            transform: scale(0.95);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+    </style>
+</head>
+<body class="h-screen w-screen flex items-center justify-center">
+
+    <!-- タイトル画面 -->
+    <div id="start-screen" class="text-center w-full max-w-lg px-4 flex flex-col items-center">
+        <h1 class="text-5xl md:text-6xl font-bold text-blue-600 mb-2 drop-shadow-sm">よむ　ぞう　くん</h1>
+        <p class="text-2xl text-blue-400 font-bold mb-8">② ながめの ことば</p>
+        <div class="mb-10 transform hover:rotate-3 transition-transform duration-500">
+            <svg width="240" height="200" viewBox="0 0 200 160" xmlns="http://www.w3.org/2000/svg">
+                <ellipse cx="60" cy="70" rx="35" ry="45" fill="#A5D8FF" stroke="#74C0FC" stroke-width="2" />
+                <ellipse cx="140" cy="70" rx="35" ry="45" fill="#A5D8FF" stroke="#74C0FC" stroke-width="2" />
+                <ellipse cx="65" cy="70" rx="20" ry="30" fill="#D0EBFF" />
+                <ellipse cx="135" cy="70" rx="20" ry="30" fill="#D0EBFF" />
+                <path d="M50,130 Q50,40 100,40 Q150,40 150,130 L50,130" fill="#A5D8FF" />
+                <path d="M100,90 Q100,150 130,145" fill="none" stroke="#A5D8FF" stroke-width="20" stroke-linecap="round" />
+                <path d="M103,95 Q103,145 125,142" fill="none" stroke="#74C0FC" stroke-width="1.5" stroke-dasharray="4,4" />
+                <circle cx="80" cy="85" r="5" fill="#333" />
+                <circle cx="120" cy="85" r="5" fill="#333" />
+                <circle cx="82" cy="83" r="2" fill="white" />
+                <circle cx="122" cy="83" r="2" fill="white" />
+                <circle cx="70" cy="100" r="8" fill="#FFD1DC" opacity="0.8" />
+                <circle cx="130" cy="100" r="8" fill="#FFD1DC" opacity="0.8" />
+            </svg>
+        </div>
+        <button onclick="startGame()" class="btn-bounce bg-orange-400 hover:bg-orange-500 text-white text-3xl font-bold py-5 px-20 rounded-full shadow-xl ring-4 ring-orange-200">
+            はじめる
+        </button>
+    </div>
+
+    <!-- メイン画面 -->
+    <div id="game-screen" class="hidden w-full h-full flex flex-col items-center justify-between py-6 px-4">
+        <div class="w-full max-w-5xl flex justify-between items-center px-4">
+            <div class="bg-white px-6 py-2 rounded-full shadow-sm border-2 border-green-100">
+                <span id="question-count" class="text-xl font-bold text-green-600">だい 1 / 10 もん</span>
+            </div>
+            <button onclick="showEndScreen()" class="btn-bounce bg-gray-200 hover:bg-gray-300 text-gray-600 px-6 py-2 rounded-full text-lg font-bold shadow-sm">
+                おわり
+            </button>
+        </div>
+
+        <div class="w-full max-w-6xl flex justify-around gap-2 sm:gap-4 flex-grow items-center">
+            <!-- カード1: え -->
+            <div class="card-container">
+                <div class="card-inner" onclick="flipCard(this)">
+                    <div class="card-face card-front pattern-1">
+                        <span class="text-4xl md:text-6xl">🖼️</span>
+                    </div>
+                    <div class="card-face card-back">
+                        <div id="display-emoji" class="text-6xl md:text-8xl">🍎</div>
+                    </div>
+                </div>
+                <p class="mt-4 text-center font-bold text-gray-400 text-lg">え</p>
+            </div>
+
+            <!-- カード2: おと -->
+            <div class="card-container">
+                <div class="card-inner" onclick="flipCard(this)">
+                    <div class="card-face card-front pattern-2">
+                        <span class="text-4xl md:text-6xl text-blue-500">●</span>
+                    </div>
+                    <div class="card-face card-back">
+                        <div id="display-dots">
+                            <!-- JS -->
+                        </div>
+                    </div>
+                </div>
+                <p class="mt-4 text-center font-bold text-gray-400 text-lg">おと</p>
+            </div>
+
+            <!-- カード3: もじ -->
+            <div class="card-container">
+                <div class="card-inner" onclick="flipCard(this)">
+                    <div class="card-face card-front pattern-3">
+                        <span class="text-4xl md:text-6xl text-red-400">あ</span>
+                    </div>
+                    <div class="card-face card-back">
+                        <div id="display-word" class="font-bold text-gray-800 leading-tight break-all text-center">りんご</div>
+                    </div>
+                </div>
+                <p class="mt-4 text-center font-bold text-gray-400 text-lg">もじ</p>
+            </div>
+        </div>
+
+        <!-- ボタン -->
+        <div class="w-full max-w-md flex flex-col sm:flex-row justify-center gap-4 pb-6">
+            <button id="correct-btn" onclick="showCelebration()" class="btn-bounce bg-rose-500 hover:bg-rose-600 text-white text-2xl font-bold py-5 px-12 rounded-3xl shadow-lg order-2 sm:order-1">
+                せいかい！
+            </button>
+            <button id="next-btn" onclick="nextQuestion()" class="btn-bounce bg-sky-500 hover:bg-sky-600 text-white text-2xl font-bold py-5 px-12 rounded-3xl shadow-lg order-1 sm:order-2">
+                つぎへ
+            </button>
+        </div>
+    </div>
+
+    <!-- お祝い -->
+    <div id="celebration-screen" class="hidden fixed inset-0 z-50 bg-white/90 backdrop-blur-sm flex flex-col items-center justify-center text-center overflow-hidden">
+        <div id="celebration-container" class="absolute inset-0"></div>
+        <div class="z-10 bg-white p-12 rounded-[3rem] shadow-2xl border-8 border-yellow-400 max-w-sm mx-4 transform scale-110">
+            <div id="celebration-emoji" class="text-8xl mb-6">🌸</div>
+            <h2 id="celebration-message" class="text-4xl font-bold text-orange-600 mb-8">よくできました！</h2>
+            <button onclick="backToGame()" class="btn-bounce bg-gray-800 text-white text-xl font-bold py-4 px-12 rounded-full">
+                もどる
+            </button>
+        </div>
+    </div>
+
+    <!-- 終了画面 -->
+    <div id="end-screen" class="hidden text-center p-8 flex flex-col items-center">
+        <div class="mb-6 text-9xl">🎈</div>
+        <h2 class="text-6xl font-bold text-blue-600 mb-4">おわり！</h2>
+        <p id="end-result-text" class="text-2xl text-gray-600 mb-12">ぜんぶで 10もん できたよ！</p>
+        <button onclick="startGame()" class="btn-bounce bg-green-500 text-white text-3xl font-bold py-6 px-12 rounded-full shadow-xl">
+            もういっかい！
+        </button>
+    </div>
+
+    <script>
+        /**
+         * 問題リストの選定基準:
+         * 1. 4文字以上 8文字以内
+         * 2. ひらがなのみ（清音・濁音のみ）
+         * 3. 拗音（ゃゅょ）、促音（っ）なし
+         * 4. 幼児語（～さん、～くん）なし
+         */
+        const questionMaster = [
+            { word: 'ひまわり', emoji: '🌻' },
+            { word: 'おにぎり', emoji: '🍙' },
+            { word: 'とうもろこし', emoji: '🌽' },
+            { word: 'さつまいも', emoji: '🍠' },
+            { word: 'しまうま', emoji: '🦓' },
+            { word: 'さぼてん', emoji: '🌵' },
+            { word: 'ながぐつ', emoji: '👢' },
+            { word: 'はぶらし', emoji: '🪥' },
+            { word: 'おふろ', emoji: '🛁' },
+            { word: 'でんわ', emoji: '📞' },
+            { word: 'てれび', emoji: '📺' },
+            { word: 'ぱそこん', emoji: '💻' },
+            { word: 'かめら', emoji: '📷' },
+            { word: 'ぴあの', emoji: '🎹' },
+            { word: 'たいこ', emoji: '🥁' },
+            { word: 'ひこうき', emoji: '✈️' },
+            { word: 'おんせん', emoji: '♨️' },
+            { word: 'ゆうえんち', emoji: '🎡' },
+            { word: 'はさみ', emoji: '✂️' },
+            { word: 'きつね', emoji: '🦊' },
+            { word: 'ふらみんご', emoji: '🦩' },
+            { word: 'くらげ', emoji: '🪼' },
+            { word: 'きのこ', emoji: '🍄' },
+            { word: 'かばん', emoji: '👜' },
+            { word: 'うでどけい', emoji: '⌚' },
+            
+            
+            
+            { word: 'めがね', emoji: '👓' },
+            
+        ];
+
+        let currentQuestions = [];
+        let currentIndex = 0;
+        let celebrationTimer = null;
+        let audioCtx = null;
+
+        function initAudio() {
+            if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        }
+
+        function playSuccessSound(type) {
+            if (!audioCtx) return;
+            const now = audioCtx.currentTime;
+            const gain = audioCtx.createGain();
+            gain.connect(audioCtx.destination);
+            gain.gain.setValueAtTime(0.05, now);
+            gain.gain.exponentialRampToValueAtTime(0.001, now + 1);
+
+            const freqs = type === 'firework' ? [523, 659, 783] : [392, 523, 659, 783];
+            freqs.forEach((f, i) => {
+                const osc = audioCtx.createOscillator();
+                osc.connect(gain);
+                osc.type = i % 2 === 0 ? 'sine' : 'triangle';
+                osc.frequency.setValueAtTime(f, now + i * 0.1);
+                osc.start(now + i * 0.1);
+                osc.stop(now + 1);
+            });
+        }
+
+        function flipCard(el) {
+            el.classList.toggle('is-flipped');
+        }
+
+        function startGame() {
+            initAudio();
+            currentQuestions = [...questionMaster].sort(() => Math.random() - 0.5).slice(0, 10);
+            currentIndex = 0;
+            document.getElementById('start-screen').classList.add('hidden');
+            document.getElementById('end-screen').classList.add('hidden');
+            document.getElementById('game-screen').classList.remove('hidden');
+            loadQuestion();
+        }
+
+        function loadQuestion() {
+            const q = currentQuestions[currentIndex];
+            document.getElementById('question-count').innerText = `だい ${currentIndex + 1} / 10 もん`;
+            document.querySelectorAll('.card-inner').forEach(card => card.classList.remove('is-flipped'));
+            
+            setTimeout(() => {
+                document.getElementById('display-emoji').innerText = q.emoji;
+                
+                const wordEl = document.getElementById('display-word');
+                wordEl.innerText = q.word;
+                
+                // 文字数に応じたサイズ調整
+                if (q.word.length > 6) {
+                    wordEl.className = "text-2xl md:text-4xl font-bold text-gray-800 leading-tight text-center";
+                } else if (q.word.length > 4) {
+                    wordEl.className = "text-3xl md:text-5xl font-bold text-gray-800 leading-tight text-center";
+                } else {
+                    wordEl.className = "text-4xl md:text-6xl font-bold text-gray-800 leading-tight text-center";
+                }
+                
+                const dotContainer = document.getElementById('display-dots');
+                dotContainer.innerHTML = '';
+                const dotSize = q.word.length > 6 ? 'clamp(14px, 4vw, 22px)' : 'clamp(18px, 5vw, 32px)';
+                for(let i = 0; i < q.word.length; i++) {
+                    const dot = document.createElement('div');
+                    dot.className = 'dot';
+                    dot.style.width = dotSize;
+                    dot.style.height = dotSize;
+                    dotContainer.appendChild(dot);
+                }
+            }, 100);
+        }
+
+        function nextQuestion() {
+            if (currentIndex < currentQuestions.length - 1) {
+                currentIndex++;
+                loadQuestion();
+            } else {
+                showEndScreen();
+            }
+        }
+
+        function showCelebration() {
+            const types = ['clap', 'firework', 'flower'];
+            const type = types[Math.floor(Math.random() * types.length)];
+            const messages = ["すごーい！", "はなまる！", "てんさいだ！", "やったね！", "バッチリ！"];
+            
+            const screen = document.getElementById('celebration-screen');
+            const container = document.getElementById('celebration-container');
+            const msgEl = document.getElementById('celebration-message');
+            const emojiEl = document.getElementById('celebration-emoji');
+            
+            container.innerHTML = '';
+            msgEl.innerText = messages[Math.floor(Math.random() * messages.length)];
+            screen.classList.remove('hidden');
+
+            playSuccessSound(type);
+
+            if (type === 'flower') {
+                emojiEl.innerText = '🌸';
+                for (let i = 0; i < 40; i++) createParticle('🌸', container);
+            } else if (type === 'firework') {
+                emojiEl.innerText = '🎆';
+                for (let i = 0; i < 8; i++) setTimeout(() => createFirework(container), i * 300);
+            } else {
+                emojiEl.innerText = '🎈';
+                for (let i = 0; i < 30; i++) createParticle('✨', container);
+                for (let i = 0; i < 15; i++) createParticle('🎈', container);
+            }
+
+            clearTimeout(celebrationTimer);
+            celebrationTimer = setTimeout(() => backToGame(), 4000);
+        }
+
+        function createParticle(emoji, container) {
+            const el = document.createElement('div');
+            el.className = 'celebration-element';
+            el.innerText = emoji;
+            el.style.left = Math.random() * 100 + 'vw';
+            el.style.animationDuration = (Math.random() * 2 + 2) + 's';
+            el.style.fontSize = (Math.random() * 20 + 25) + 'px';
+            container.appendChild(el);
+            setTimeout(() => el.remove(), 4000);
+        }
+
+        function createFirework(container) {
+            const x = Math.random() * 80 + 10;
+            const y = Math.random() * 60 + 10;
+            const colors = ['#ff4444', '#44ff44', '#4444ff', '#ffff44', '#ff44ff'];
+            const color = colors[Math.floor(Math.random() * colors.length)];
+            const fw = document.createElement('div');
+            fw.className = 'firework';
+            fw.style.left = x + '%';
+            fw.style.top = y + '%';
+            fw.style.backgroundColor = color;
+            fw.style.boxShadow = `0 0 20px ${color}`;
+            container.appendChild(fw);
+            setTimeout(() => fw.remove(), 800);
+        }
+
+        function backToGame() {
+            clearTimeout(celebrationTimer);
+            document.getElementById('celebration-screen').classList.add('hidden');
+        }
+
+        function showEndScreen() {
+            document.getElementById('game-screen').classList.add('hidden');
+            document.getElementById('celebration-screen').classList.add('hidden');
+            document.getElementById('end-screen').classList.remove('hidden');
+            
+            // 終了時のメッセージを調整
+            const resultText = document.getElementById('end-result-text');
+            if (currentIndex + 1 === 10) {
+                resultText.innerText = "ぜんぶで 10もん できたよ！";
+            } else {
+                resultText.innerText = `${currentIndex + 1}もん まで できたよ！`;
+            }
+        }
+    </script>
+</body>
+</html>
